@@ -8,7 +8,7 @@ email    : serena.bonaretti.research@gmail.com
 
 
 """
-This module contains functions to visualize images
+This module contains functions to visualize Scanco images
 
 """
 
@@ -24,7 +24,7 @@ from ipywidgets import Layout
 from ipywidgets import widgets as widgets
 
 
-def show_sitk_slice(img, slice_id = -1, plane = "f"):
+def show_sitk_slice(img, slice_id = -1, plane = "a"):
 
     """
     Shows one slice of an image. Slice id and plane are optional argument
@@ -32,10 +32,10 @@ def show_sitk_slice(img, slice_id = -1, plane = "f"):
         - img: 3D image (type: SimpleITK)
         - slice_id: id of the slice to visualize. It is an optional argument. If not specified, the function shows the slice in the middle of the stack (type: integer)
         - plane: radiological plane to visualize. It is an optional argument with three options:
-          - "f", for frontal
-          - "s", for sagittal
           - "a", for axial
-          If not specified, the function shows the slice in the frontal plane. (type: string)
+          - "v", for vertical
+          - "h", for horizontal
+          If not specified, the function shows the slice in the axial plane. (type: string)
           More information on radiological planes for .isq images here: https://github.com/JCMSK/pyMSK/blob/master/doc/img/isq_image_directions.pdf
     """
     
@@ -47,8 +47,8 @@ def show_sitk_slice(img, slice_id = -1, plane = "f"):
         return 
                
     # check that the plane is either f, s, or a
-    if plane != "s" and plane != "a" and plane != "f":
-        print ("plane must be \"s\", \"a\" or \"f\"  ")
+    if plane != "v" and plane != "h" and plane != "a":
+        print ("plane must be \"a\", \"v\" or \"h\"  ")
         return  
         
     # get number of voxels
@@ -57,25 +57,25 @@ def show_sitk_slice(img, slice_id = -1, plane = "f"):
     size_f = img.GetSize()[2] 
              
     # get slice_id
-    if   slice_id == -1 and plane == "s":
+    if   slice_id == -1 and plane == "v":
         slice_id = round(size_s / 2)
-    elif slice_id == -1 and plane == "a":
+    elif slice_id == -1 and plane == "h":
         slice_id = round(size_a / 2)
-    elif slice_id == -1 and plane == "f":
+    elif slice_id == -1 and plane == "a":
         slice_id = round(size_f / 2)
     else:
         slice_id = round(slice_id) # if the user enters a decimal, round it
        
     # check that slice_id is in range  
-    if plane == "s":
+    if plane == "v":
         if slice_id <=0 or slice_id >= size_s:
             print ("slice_id out of range")
             return
-    if plane == "a":
+    if plane == "h":
         if slice_id <=0 or slice_id >= size_a:
             print ("slice_id out of range")
             return
-    if plane == "f":
+    if plane == "a":
         if slice_id <=0 or slice_id >= size_f:
             print ("slice_id out of range")
             return
@@ -84,11 +84,11 @@ def show_sitk_slice(img, slice_id = -1, plane = "f"):
     # --- preparing slice for visualization ----------------------------------   
     
     # get slice
-    if   plane == "s":
+    if   plane == "v":
         sitk_slice = img[slice_id,:,:] 
-    elif plane == "a":
+    elif plane == "h":
         sitk_slice = img[:,slice_id,:]
-    elif plane == "f":
+    elif plane == "a":
         sitk_slice = img[:,:,slice_id]
         
     # transform slice from SimpleITK to numpy
@@ -104,17 +104,17 @@ def show_sitk_slice(img, slice_id = -1, plane = "f"):
 
 
 
-def browse_sitk_image (img, plane = "f"):
+def browse_sitk_image (img, plane = "a"):
 
     """
     This function allows the user to browse an image using a slider
     Inputs:
     - img: 3D image (type: SimpleITK)
     - plane: radiological plane to visualize. It is an optional argument with three options:
-      - "f", for frontal
-      - "s", for sagittal
       - "a", for axial
-      If not specified, the function shows the slice in the frontal plane. (type: string)
+      - "v", for vertical
+      - "h", for horizontal
+      If not specified, the function shows the slice in the axial plane. (type: string)
       More information on radiological planes for .isq images here: https://github.com/JCMSK/pyMSK/blob/master/doc/img/isq_image_directions.pdf
     """
     
@@ -127,8 +127,8 @@ def browse_sitk_image (img, plane = "f"):
         return 
                
     # check that the plane is either f, s, or a
-    if plane != "s" and plane != "a" and plane != "f":
-        print ("plane must be \"s\", \"a\" or \"f\"  ")
+    if plane != "v" and plane != "h" and plane != "a":
+        print ("plane must be \"a\", \"v\" or \"h\"  ")
         return  
 
 
@@ -140,13 +140,13 @@ def browse_sitk_image (img, plane = "f"):
     size_f = img.GetSize()[2]
         
     # get first_slice_viz
-    if   plane == "s":
+    if   plane == "v":
         first_slice_viz = round(size_s / 2)
         n_of_slices = size_s
-    elif plane == "a":
+    elif plane == "h":
         first_slice_viz = round(size_a / 2)
         n_of_slices = size_a
-    elif plane == "f":
+    elif plane == "a":
         first_slice_viz = round(size_f / 2)
         n_of_slices = size_f
 
@@ -159,11 +159,11 @@ def browse_sitk_image (img, plane = "f"):
     def view_image(slider):
 
         # get slice of image
-        if   plane == "s":
+        if   plane == "v":
             slice_np_img = np_img[:,:,slider] 
-        elif plane == "a":
+        elif plane == "h":
             slice_np_img = np_img[:,slider,:]
-        elif plane == "f":  
+        elif plane == "a":  
             slice_np_img = np_img[slider,:,:]        
 
         # show both
