@@ -1,2 +1,2 @@
 # pyMSK
-Tools for processing and analysis of musculoskeletal images
+Package with functions to process and analyze musculoskeletal images and compute biomechanics simulations
