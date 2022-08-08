@@ -1,7 +1,2 @@
-# pyMSK
-Package with functions to process and analyze musculoskeletal images and compute biomechanics simulations
-
-## Installation  
-```
-pip install pymsk
-```
+This repository is obsolete.   
+Find the new one at https://github.com/ORMIRcommunity/pymsk
